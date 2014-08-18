@@ -271,7 +271,7 @@ namespace OpenSSL.Core
 		#endregion
 
 		#region Version
-		public const uint Wrapper = 0x1000105f; // 0x10000000;
+		public const uint Wrapper = 0x1000108f; // 0x10000000;
 
 		[DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
 		public extern static string SSLeay_version(int type);
