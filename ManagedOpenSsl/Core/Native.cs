@@ -154,7 +154,7 @@ namespace OpenSSL.Core
 		static Native()
 		{
 			//Library location
-			//Plagarized from LibGit2Sharp
+			//Plagiarized from LibGit2Sharp
 			if (!IsRunningOnLinux())
 			{
 				string originalAssemblypath = new Uri(Assembly.GetExecutingAssembly().EscapedCodeBase).LocalPath;
@@ -162,6 +162,10 @@ namespace OpenSSL.Core
 				string currentArchSubPath = Path.Combine("NativeBinaries", ProcessorArchitecture);
 
 				string path = Path.Combine(Path.GetDirectoryName(originalAssemblypath), currentArchSubPath);
+
+				// Preempt System directory lookup by setting Dll directory
+				// This is superior to relying upon path and still allows bitness resolved at runtime
+				SetDllDirectory(path);
 
 				const string pathEnvVariable = "PATH";
 				if (Environment.GetEnvironmentVariable(pathEnvVariable) == null)
@@ -289,6 +293,18 @@ namespace OpenSSL.Core
 
 		#region Version
 		public const uint Wrapper = 0x1000108f; // 0x10000000;
+		#endregion
+
+		#region Imports
+
+		#region Kernel
+
+		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		static extern bool SetDllDirectory(string lpPathName);
+
+		#endregion
+
+		#region OpenSSL
 
 		[DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
 		public extern static string SSLeay_version(int type);
@@ -313,6 +329,8 @@ namespace OpenSSL.Core
 
 		[DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
 		public extern static string BF_options();
+
+		#endregion
 
 		#endregion
 
